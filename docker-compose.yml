@@ -1,0 +1,31 @@
+# https://github.com/maxpou/docker-symfony/tree/master/php7-fpm
+version: '2'
+services:
+    db:
+        image: mysql
+        volumes:
+            - './var/db:/var/lib/mysql'
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        ports:
+            - ${MYSQL_PORT}:33333
+
+    php:
+        build:
+            context: docker/php7-fpm
+            args:
+                TIMEZONE: ${TIMEZONE}
+        volumes:
+          - .:/var/www
+
+    nginx:
+        build: docker/nginx
+        ports:
+            - 8080:8888
+        volumes_from:
+          - php
+        volumes:
+            - ./var/logs/nginx/:/var/log/nginx
