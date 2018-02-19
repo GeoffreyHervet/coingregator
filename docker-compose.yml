@@ -10,8 +10,9 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            MYSQL_P: ${MYSQL_PASSWORD}
         ports:
-            - ${MYSQL_PORT}:33333
+            - 3333:3306
 
     php:
         build:
