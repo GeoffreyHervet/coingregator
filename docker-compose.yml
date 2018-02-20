@@ -20,13 +20,28 @@ services:
             args:
                 TIMEZONE: ${TIMEZONE}
         volumes:
-          - .:/var/www
+            - .:/var/www
 
     nginx:
         build: docker/nginx
         ports:
             - 8080:8888
         volumes_from:
-          - php
+            - php
         volumes:
             - ./var/logs/nginx/:/var/log/nginx
+
+    amqp:
+        image: rabbitmq:3.7-management
+        hostname: rabbimq
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+            RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
+        ports:
+            - 15672
+            - 15671
+            - 5672
+        expose:
+            - 15672
+            - 15671
