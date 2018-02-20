@@ -4,6 +4,7 @@
     "require": {
         "php": "^7.0.8",
         "ext-iconv": "*",
+        "php-amqplib/rabbitmq-bundle": "^1.14",
         "symfony/console": "^3.4",
         "symfony/flex": "^1.0",
         "symfony/framework-bundle": "^3.4",
@@ -53,7 +54,7 @@
     "extra": {
         "symfony": {
             "id": "01C6PSV37XZ9H8ZSFDMXM7339S",
-            "allow-contrib": false
+            "allow-contrib": true
         }
     }
 }
