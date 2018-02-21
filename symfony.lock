@@ -173,8 +173,14 @@
             "ref": "a249484db698d1a847a30291c8f732414ac47e25"
         }
     },
+    "symfony/var-dumper": {
+        "version": "v3.4.4"
+    },
     "symfony/yaml": {
         "version": "v3.4.4"
+    },
+    "tightenco/collect": {
+        "version": "v5.5.33"
     },
     "zendframework/zend-code": {
         "version": "3.1.0"
