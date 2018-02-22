@@ -51,6 +51,11 @@ class ExchangePair implements ModelInterface
         ];
     }
 
+    public function __toString(): string
+    {
+        return $this->getSymbol();
+    }
+
     /**
      * @return int|null
      */

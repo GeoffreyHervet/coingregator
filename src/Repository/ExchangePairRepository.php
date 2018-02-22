@@ -29,22 +29,25 @@ class ExchangePairRepository extends AbstractRepository
     {
         $this->connection->createQueryBuilder()
             ->insert('exchange_pair')
-            ->values([
-                'id' => ':id',
-                'exchange_id' => ':exchange_id',
-                'pair_symbol' => ':symbol',
-                'asset_id_1' => ':asset_id_1',
-                'asset_id_2' => ':asset_id_2',
-                'watch' => ':watch',
-            ])
-            ->setParameters([
-                'id' => $pair->getId(),
-                'exchange_id' => $pair->getExchange()->getId(),
-                'symbol' => $pair->getSymbol(),
-                'asset_id_1' => $pair->getFirstAsset() ? $pair->getFirstAsset()->getId() : null,
-                'asset_id_2' => $pair->getSecondAsset() ? $pair->getSecondAsset()->getId() : null,
-                'watch' => (int) $pair->isWatching(),
-            ])
+            ->values($this->getFields())
+            ->setParameters($this->pairToParameters($pair))
+            ->execute();
+
+        return $pair->setId((int)$this->connection->lastInsertId());
+    }
+
+    public function update(ExchangePair $pair): ExchangePair
+    {
+        $qb = $this->connection->createQueryBuilder()
+            ->update('exchange_pair');
+
+        foreach ($this->getFields() as $field => $paramName) {
+            $qb->set($field, $paramName);
+        }
+
+        $qb
+            ->where('id = :id')
+            ->setParameters($this->pairToParameters($pair))
             ->execute();
 
         return $pair->setId((int)$this->connection->lastInsertId());
@@ -104,5 +107,29 @@ class ExchangePairRepository extends AbstractRepository
             ->leftJoin('p', 'asset', 'a1', 'a1.id = p.asset_id_1')
             ->leftJoin('p', 'asset', 'a2', 'a2.id = p.asset_id_2')
         ;
+    }
+
+    private function pairToParameters(ExchangePair $pair): array
+    {
+        return [
+            'id' => $pair->getId(),
+            'exchange_id' => $pair->getExchange()->getId(),
+            'symbol' => $pair->getSymbol(),
+            'asset_id_1' => $pair->getFirstAsset() ? $pair->getFirstAsset()->getId() : null,
+            'asset_id_2' => $pair->getSecondAsset() ? $pair->getSecondAsset()->getId() : null,
+            'watch' => (int) $pair->isWatching(),
+        ];
+    }
+
+    private function getFields(): array
+    {
+        return [
+            'id' => ':id',
+            'exchange_id' => ':exchange_id',
+            'pair_symbol' => ':symbol',
+            'asset_id_1' => ':asset_id_1',
+            'asset_id_2' => ':asset_id_2',
+            'watch' => ':watch',
+        ];
     }
 }

@@ -29,6 +29,11 @@ class Asset implements ModelInterface
         ];
     }
 
+    public function __toString(): string
+    {
+        return $this->getName();
+    }
+
     /**
      * @return int|null
      */
