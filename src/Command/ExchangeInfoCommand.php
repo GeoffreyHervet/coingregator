@@ -2,19 +2,26 @@
 
 namespace App\Command;
 
+use function array_keys;
+use function dump;
 use function get_class;
 use function json_decode;
+use function json_encode;
+use const JSON_PRETTY_PRINT;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;use App\Factory\ExchangeFactory;
 use App\Model\Exchange;
 use App\Repository\ExchangeRepository;
+use Tightenco\Collect\Support\Collection;
 
-class ExchangeCreateCommand extends Command
+class ExchangeInfoCommand extends Command
 {
     /**
-     * @var ExchangeRepository
+     * @var ExchangeReposito`ry
      */
     private $exchangeRepository;
 
@@ -37,29 +44,36 @@ class ExchangeCreateCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('app:exchange:create')
+            ->setName('app:exchange:info')
             ->setDescription('Create an exchange')
         ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
         $helper = $this->getHelper('question');
+        $exchanges = $this->exchangeRepository->all();
+        $question = new ChoiceQuestion(
+            'Which exchange ?',
+            $exchanges->toArray()
+        );
+        $question->setErrorMessage('Exchange %s is invalid.');
 
-        $questionName = new Question('Exchange name ? ');
-        $name = $helper->ask($input, $output, $questionName);
-
-        $config = $helper->ask($input, $output, new Question('Exchange Config ? ', '[]'));
-        $config = json_decode($config, true);
-
-        $this->exchange = ExchangeFactory::create(trim($name), $config);
+        $exchangeName = $helper->ask($input, $output, $question);
+        $this->exchange = $exchanges->first(function (Exchange $exchange) use ($exchangeName): bool {
+            return $exchangeName == $exchange;
+        });
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->exchangeRepository->insert($this->exchange);
+        $exchangeArray = $this->exchange->toArray();
+        $exchangeArray['config'] = json_encode($exchangeArray['config'], JSON_PRETTY_PRINT);
+
+        $table = new Table($output);
+        $table->setHeaders(array_keys($exchangeArray))
+            ->addRow($exchangeArray)
+            ->render();
     }
 
 }

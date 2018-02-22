@@ -24,6 +24,11 @@ class Exchange implements ModelInterface
         $this->config = [];
     }
 
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
     public function toArray(): array
     {
         return [
