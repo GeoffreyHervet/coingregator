@@ -2,8 +2,7 @@
 
 namespace App\Model;
 
-
-class Coin implements ModelInterface
+class Exchange implements ModelInterface
 {
     /**
      * @var int|null
@@ -16,16 +15,21 @@ class Coin implements ModelInterface
     private $name;
 
     /**
-     * @var string
+     * @var array
      */
-    private $slug;
+    private $config;
+
+    public function __construct()
+    {
+        $this->config = [];
+    }
 
     public function toArray(): array
     {
         return [
             'id' => $this->getId(),
             'name' => $this->getName(),
-            'slug' => $this->getSlug(),
+            'config' => $this->getConfig(),
         ];
     }
 
@@ -38,11 +42,11 @@ class Coin implements ModelInterface
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      *
-     * @return Coin
+     * @return Exchange
      */
-    public function setId(int $id): Coin
+    public function setId(int $id): Exchange
     {
         $this->id = $id;
 
@@ -60,9 +64,9 @@ class Coin implements ModelInterface
     /**
      * @param string $name
      *
-     * @return Coin
+     * @return Exchange
      */
-    public function setName(string $name): Coin
+    public function setName(string $name): Exchange
     {
         $this->name = $name;
 
@@ -70,22 +74,27 @@ class Coin implements ModelInterface
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getSlug(): string
+    public function getConfig(): array
     {
-        return $this->slug;
+        return $this->config;
     }
 
     /**
-     * @param string $slug
+     * @param string|array $config
      *
-     * @return Coin
+     * @return Exchange
      */
-    public function setSlug(string $slug): Coin
+    public function setConfig($config = null): Exchange
     {
-        $this->slug = $slug;
+        if (!is_array($config)) {
+            $config = json_decode($config, true);
+        }
+
+        $this->config = $config ?: [];
 
         return $this;
     }
+
 }

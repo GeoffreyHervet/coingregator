@@ -3,9 +3,9 @@
 namespace App\Repository;
 
 use Doctrine\DBAL\Connection;
-use App\Model\Coin;
+use App\Model\Exchange;
 
-class CoinRepository
+class ExchangeRepository
 {
     /**
      * @var Connection
@@ -13,7 +13,7 @@ class CoinRepository
     private $connection;
 
     /**
-     * CoinRepository constructor.
+     * ExchangeRepository constructor.
      *
      * @param Connection $connection
      */
@@ -22,18 +22,18 @@ class CoinRepository
         $this->connection = $connection;
     }
 
-    public function insert(Coin $coin): Coin
+    public function insert(Exchange $exchange): Exchange
     {
         $this->connection->createQueryBuilder()
-            ->insert('coin')
+            ->insert('exchange')
             ->values([
                 'id' => ':id',
                 'name' => ':name',
-                'slug' => ':slug',
+                'config' => ':config',
             ])
-            ->setParameters($coin->toArray())
+            ->setParameters($exchange->toArray())
             ->execute();
 
-        return $coin->setId((int)$this->connection->lastInsertId());
+        return $exchange->setId((int)$this->connection->lastInsertId());
     }
 }
