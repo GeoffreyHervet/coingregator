@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use App\Domain\Handler\Exchange\GetExchangeHandler;
+use App\Domain\Request\Exchange\GetExchangeRequest;
 use function array_keys;
 use function dump;
 use function get_class;
@@ -21,7 +23,7 @@ use Tightenco\Collect\Support\Collection;
 class ExchangeInfoCommand extends Command
 {
     /**
-     * @var ExchangeReposito`ry
+     * @var ExchangeRepository
      */
     private $exchangeRepository;
 
@@ -31,13 +33,20 @@ class ExchangeInfoCommand extends Command
     private $exchange;
 
     /**
-     * DatabaseSeedCommand constructor.
+     * @var GetExchangeHandler
+     */
+    private $handler;
+
+    /**
+     * ExchangeInfoCommand constructor.
      *
      * @param ExchangeRepository $exchangeRepository
+     * @param GetExchangeHandler $handler
      */
-    public function __construct(ExchangeRepository $exchangeRepository)
+    public function __construct(ExchangeRepository $exchangeRepository, GetExchangeHandler $handler)
     {
         $this->exchangeRepository = $exchangeRepository;
+        $this->handler = $handler;
         parent::__construct();
     }
 
@@ -55,7 +64,9 @@ class ExchangeInfoCommand extends Command
         $exchanges = $this->exchangeRepository->all();
         $question = new ChoiceQuestion(
             'Which exchange ?',
-            $exchanges->toArray()
+            $exchanges->map(function (Exchange $exchange): string {
+                return $exchange;
+            })->toArray()
         );
         $question->setErrorMessage('Exchange %s is invalid.');
 
@@ -67,13 +78,10 @@ class ExchangeInfoCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $exchangeArray = $this->exchange->toArray();
-        $exchangeArray['config'] = json_encode($exchangeArray['config'], JSON_PRETTY_PRINT);
+        $request = new GetExchangeRequest();
+        $request->id = $this->exchange->getId();
 
-        $table = new Table($output);
-        $table->setHeaders(array_keys($exchangeArray))
-            ->addRow($exchangeArray)
-            ->render();
+        $output->writeln(json_encode($this->handler->handle($request), JSON_PRETTY_PRINT));
     }
 
 }

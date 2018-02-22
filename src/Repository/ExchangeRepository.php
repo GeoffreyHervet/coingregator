@@ -2,28 +2,13 @@
 
 namespace App\Repository;
 
+use App\Exception\NotFoundException;
 use App\Factory\ExchangeFactory;
-use Doctrine\DBAL\Connection;
 use App\Model\Exchange;
 use Tightenco\Collect\Support\Collection;
 
-class ExchangeRepository
+class ExchangeRepository extends AbstractRepository
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * ExchangeRepository constructor.
-     *
-     * @param Connection $connection
-     */
-    public function __construct(Connection $connection)
-    {
-        $this->connection = $connection;
-    }
-
     public function insert(Exchange $exchange): Exchange
     {
         $exchangeParams = $exchange->toArray();
@@ -46,13 +31,30 @@ class ExchangeRepository
     {
         return Collection::make(
             $this->connection->createQueryBuilder()
-                ->select('id', 'name', 'config')
+                ->select('*')
                 ->from('exchange')
                 ->execute()
                 ->fetchAll()
         )->map(function(array $dbData): Exchange {
             return $this->dbRowToExchange($dbData);
         });
+    }
+
+    public function get(int $id): Exchange
+    {
+        $row = $this->connection->createQueryBuilder()
+            ->select('*')
+            ->from('exchange')
+            ->andWhere('id = :id')
+            ->setParameter('id', $id)
+            ->execute()
+            ->fetch() ?: [];
+
+        if (empty(array_filter($row))) {
+            throw new NotFoundException('exchange');
+        }
+
+        return $this->dbRowToExchange($row);
     }
 
     private function dbRowToExchange(array $dbRow): Exchange

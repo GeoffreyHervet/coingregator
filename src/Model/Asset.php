@@ -20,7 +20,7 @@ class Asset implements ModelInterface
      */
     private $slug;
 
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'id' => $this->getId(),

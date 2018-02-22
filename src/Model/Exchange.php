@@ -29,7 +29,7 @@ class Exchange implements ModelInterface
         return $this->getName();
     }
 
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'id' => $this->getId(),

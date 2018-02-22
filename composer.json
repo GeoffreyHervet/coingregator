@@ -10,6 +10,7 @@
         "symfony/framework-bundle": "^3.4",
         "symfony/lts": "^3",
         "symfony/orm-pack": "^1.0",
+        "symfony/validator": "^3.4",
         "symfony/yaml": "^3.4",
         "tightenco/collect": "5.5.*"
     },

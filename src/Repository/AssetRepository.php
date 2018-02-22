@@ -2,26 +2,10 @@
 
 namespace App\Repository;
 
-use Doctrine\DBAL\Connection;
 use App\Model\Asset;
 
-class AssetRepository
+class AssetRepository extends AbstractRepository
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * AssetRepository constructor.
-     *
-     * @param Connection $connection
-     */
-    public function __construct(Connection $connection)
-    {
-        $this->connection = $connection;
-    }
-
     public function insert(Asset $asset): Asset
     {
         $this->connection->createQueryBuilder()

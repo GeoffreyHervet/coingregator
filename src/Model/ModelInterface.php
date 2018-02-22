@@ -2,7 +2,9 @@
 
 namespace App\Model;
 
-interface ModelInterface
+use Tightenco\Collect\Contracts\Support\Arrayable;
+
+interface ModelInterface extends Arrayable
 {
-    public function toArray(): array;
+    public function toArray();
 }
