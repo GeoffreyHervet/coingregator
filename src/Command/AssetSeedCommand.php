@@ -31,7 +31,7 @@ class AssetSeedCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('assets:seed')
+            ->setName('app:assets:seed')
             ->setDescription('Seed database with top assets');
     }
 

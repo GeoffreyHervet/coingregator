@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use Doctrine\DBAL\Connection;
 use App\Model\Exchange;
+use function json_encode;
 
 class ExchangeRepository
 {
@@ -24,6 +25,9 @@ class ExchangeRepository
 
     public function insert(Exchange $exchange): Exchange
     {
+        $exchangeParams = $exchange->toArray();
+        $exchangeParams['config'] = json_encode($exchangeParams['config']);
+
         $this->connection->createQueryBuilder()
             ->insert('exchange')
             ->values([
@@ -31,7 +35,7 @@ class ExchangeRepository
                 'name' => ':name',
                 'config' => ':config',
             ])
-            ->setParameters($exchange->toArray())
+            ->setParameters($exchangeParams)
             ->execute();
 
         return $exchange->setId((int)$this->connection->lastInsertId());
