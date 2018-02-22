@@ -5,6 +5,7 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
+use function fastcgi_finish_request;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -32,11 +33,10 @@ class Version20180219104039 extends AbstractMigration
         $exchangePairTable = $schema->createTable('exchange_pair');
         $this->addIdToTable($exchangePairTable);
         $exchangePairTable->addColumn('exchange_id', 'integer')->setNotnull(true)->setUnsigned(true);
-        $exchangePairTable->addColumn('pair_symbol', 'integer')->setNotnull(true)->setUnsigned(true);
-        $exchangePairTable->addColumn('asset_id_1', 'integer')->setNotnull(true)->setUnsigned(true);
-        $exchangePairTable->addColumn('asset_id_2', 'integer')->setNotnull(true)->setUnsigned(true);
+        $exchangePairTable->addColumn('pair_symbol', 'string')->setNotnull(true)->setUnsigned(true);
+        $exchangePairTable->addColumn('asset_id_1', 'integer')->setNotnull(false)->setUnsigned(true);
+        $exchangePairTable->addColumn('asset_id_2', 'integer')->setNotnull(false)->setUnsigned(true);
         $exchangePairTable->addColumn('watch', 'boolean')->setNotnull(true)->setDefault(false);
-
 
         $exchangePairTable->addForeignKeyConstraint($assetTable, ['asset_id_1'], ['id']);
         $exchangePairTable->addForeignKeyConstraint($assetTable, ['asset_id_2'], ['id']);

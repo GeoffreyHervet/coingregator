@@ -2,8 +2,6 @@
 
 namespace App\Command;
 
-use function get_class;
-use function json_decode;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

@@ -5,6 +5,7 @@ namespace App\Domain\Handler\Exchange;
 use App\Domain\Request\Exchange\GetExchangeRequest;
 use App\Helper\RequestValidator;
 use App\Model\Exchange;
+use App\Model\ExchangePair;
 use App\Repository\ExchangePairRepository;
 use App\Repository\ExchangeRepository;
 use Tightenco\Collect\Support\Collection;
@@ -57,6 +58,14 @@ class GetExchangeHandler
 
     private function getPairs(Exchange $exchange): array
     {
-        return $this->exchangePairRepository->byExchange($exchange)->toArray();
+        return $this->exchangePairRepository
+            ->byExchange($exchange)
+            ->map(function (ExchangePair $pair): array {
+                $pairArray = $pair->toArray();
+                unset($pairArray['exchange']);
+
+                return $pairArray;
+            })
+            ->toArray();
     }
 }

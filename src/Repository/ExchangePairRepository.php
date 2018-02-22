@@ -25,6 +25,31 @@ class ExchangePairRepository extends AbstractRepository
         });
     }
 
+    public function insert(ExchangePair $pair): ExchangePair
+    {
+        $this->connection->createQueryBuilder()
+            ->insert('exchange_pair')
+            ->values([
+                'id' => ':id',
+                'exchange_id' => ':exchange_id',
+                'pair_symbol' => ':symbol',
+                'asset_id_1' => ':asset_id_1',
+                'asset_id_2' => ':asset_id_2',
+                'watch' => ':watch',
+            ])
+            ->setParameters([
+                'id' => $pair->getId(),
+                'exchange_id' => $pair->getExchange()->getId(),
+                'symbol' => $pair->getSymbol(),
+                'asset_id_1' => $pair->getFirstAsset() ? $pair->getFirstAsset()->getId() : null,
+                'asset_id_2' => $pair->getSecondAsset() ? $pair->getSecondAsset()->getId() : null,
+                'watch' => (int) $pair->isWatching(),
+            ])
+            ->execute();
+
+        return $pair->setId((int)$this->connection->lastInsertId());
+    }
+
     private function dbRowToObject(
         array $dbRow,
         Exchange $exchange = null,
@@ -39,7 +64,7 @@ class ExchangePairRepository extends AbstractRepository
             );
         }
 
-        if ($firstAsset === null) {
+        if ($firstAsset === null && !empty($dbRow['a1id'])) {
             $firstAsset = AssetFactory::createWithId(
                 (int) $dbRow['a1id'],
                 $dbRow['a1name'],
@@ -47,7 +72,7 @@ class ExchangePairRepository extends AbstractRepository
             );
         }
 
-        if ($secondAsset === null) {
+        if ($secondAsset === null && !empty($dbRow['a2id'])) {
             $secondAsset = AssetFactory::createWithId(
                 (int) $dbRow['a2id'],
                 $dbRow['a2name'],

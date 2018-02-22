@@ -5,7 +5,7 @@ namespace App\Model;
 class ExchangePair implements ModelInterface
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $id;
 
@@ -47,13 +47,14 @@ class ExchangePair implements ModelInterface
             'symbol' => $this->getSymbol(),
             'first_asset' => $this->getFirstAsset() ? $this->getFirstAsset()->toArray() : null,
             'second_asset' => $this->getSecondAsset() ? $this->getSecondAsset()->toArray() : null,
+            'watching' => $this->isWatching(),
         ];
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
