@@ -1,6 +1,6 @@
 {
     "name": "root/binance",
     "require": {
-        "wisembly/elephant.io": "^3.3"
+        "ratchet/pawl": "^0.3.1"
     }
 }

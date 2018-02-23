@@ -164,6 +164,9 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.7.0"
     },
+    "symfony/process": {
+        "version": "v3.4.4"
+    },
     "symfony/routing": {
         "version": "3.3",
         "recipe": {
@@ -187,6 +190,15 @@
     },
     "symfony/var-dumper": {
         "version": "v3.4.4"
+    },
+    "symfony/web-server-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "c72d107d077f1654428edaed69415d0228c1aefe"
+        }
     },
     "symfony/yaml": {
         "version": "v3.4.4"
