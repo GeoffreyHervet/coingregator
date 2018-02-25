@@ -55,7 +55,7 @@ class AssetSeedCommand extends Command
             AssetFactory::create('IOTA', 'iota'),
             AssetFactory::create('Monero', 'monero'),
             AssetFactory::create('NEM', 'nem'),
-            AssetFactory::create('Ehtereum Classic', 'ehtereum-classic'),
+            AssetFactory::create('Ethereum Classic', 'ethereum-classic'),
             AssetFactory::create('Lisk', 'lisk'),
         ])
         ->each(function (Asset $asset) {
